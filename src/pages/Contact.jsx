@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useForm, ValidationError } from '@formspree/react';
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaHandshake, FaDollarSign, FaCheck, FaTimes } from 'react-icons/fa';
+import { MdLocationOn, MdPhone, MdEmail, MdAccessTime, MdOutlineSupportAgent } from 'react-icons/md';
 import '../styles/Contact.css';
 
 const Contact = () => {
@@ -35,25 +37,25 @@ const Contact = () => {
 
   const contactInfo = [
     {
-      icon: "📍",
+      icon: <MdLocationOn className="contact-icon" />,
       title: "Visit Our Office",
       details: ["123 Elite Street, Luxury District", "New York, NY 10001"],
       action: "Get Directions"
     },
     {
-      icon: "📞",
+      icon: <MdPhone className="contact-icon" />,
       title: "Call Us",
       details: ["+1 (555) 123-4567", "+1 (555) 123-4568"],
       action: "Call Now"
     },
     {
-      icon: "✉️",
+      icon: <MdEmail className="contact-icon" />,
       title: "Email Us",
       details: ["info@eliteestate.com", "projects@eliteestate.com"],
       action: "Send Email"
     },
     {
-      icon: "🕒",
+      icon: <MdAccessTime className="contact-icon" />,
       title: "Business Hours",
       details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 10:00 AM - 4:00 PM"],
       action: "Schedule Meeting"
@@ -71,30 +73,18 @@ const Contact = () => {
 
   if (state.succeeded) {
     return (
-      <div className="contact-page">
-        <div className="container">
-          <motion.div
-            className="success-message"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="success-icon">✅</div>
-            <h2>Thank You!</h2>
-            <p>
-              Your message has been sent successfully. Our team will get back to you within 24 hours.
-            </p>
-            <motion.button
-              className="back-button"
-              onClick={() => window.location.reload()}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Send Another Message
-            </motion.button>
-          </motion.div>
+      <motion.div 
+        className="form-success"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="success-icon">
+          <FaCheck className="check-icon" />
         </div>
-      </div>
+        <h3>Thank you for your message!</h3>
+        <p>We'll get back to you within 24 hours.</p>
+      </motion.div>
     );
   }
 
@@ -303,7 +293,7 @@ const Contact = () => {
             <h2>Why Choose Elite Estate?</h2>
             <div className="benefits-list">
               <div className="benefit-item">
-                <span className="benefit-icon">🏆</span>
+                <span className="benefit-icon"><FaCheck /></span>
                 <div>
                   <h4>Award-Winning Excellence</h4>
                   <p>Recognized industry leader with 50+ awards for outstanding projects.</p>
@@ -317,14 +307,14 @@ const Contact = () => {
                 </div>
               </div>
               <div className="benefit-item">
-                <span className="benefit-icon">🤝</span>
+                <span className="benefit-icon"><FaHandshake /></span>
                 <div>
                   <h4>Personalized Service</h4>
                   <p>Dedicated project managers ensure your vision becomes reality.</p>
                 </div>
               </div>
               <div className="benefit-item">
-                <span className="benefit-icon">💰</span>
+                <span className="benefit-icon"><FaDollarSign /></span>
                 <div>
                   <h4>Transparent Pricing</h4>
                   <p>No hidden costs. Clear, upfront pricing for all our services.</p>
