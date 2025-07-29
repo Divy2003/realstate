@@ -36,9 +36,14 @@
 /* Projects Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-8);
   margin-bottom: var(--space-16);
+  justify-content: center;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
 }
 
 /* Project Card */
@@ -165,12 +170,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
   animation: shimmer 2s infinite;
 }
 
@@ -259,6 +262,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -269,25 +273,25 @@
   .projects-page {
     padding: var(--space-16) 0;
   }
-  
+
   .page-title {
     font-size: var(--text-4xl);
   }
-  
+
   .page-subtitle {
     font-size: var(--text-lg);
   }
-  
+
   .projects-grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
-  
+
   .project-card {
     max-width: 500px;
     margin: 0 auto;
   }
-  
+
   .project-details {
     grid-template-columns: 1fr;
     gap: var(--space-3);
@@ -298,11 +302,11 @@
   .page-title {
     font-size: var(--text-3xl);
   }
-  
+
   .project-content {
     padding: var(--space-4);
   }
-  
+
   .project-image {
     height: 200px;
   }

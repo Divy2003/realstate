@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useState } from 'react';
-import ProjectGallery from '../components/ProjectGallery';
+import ProjectCompleted from '../components/ProjectCompleted';
 import { projects, categories } from '../data/projectsData';
 import '../styles/CompletedProjectsPage.css';
 
@@ -64,7 +64,7 @@ const CompletedProjects = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <ProjectGallery 
+          <ProjectCompleted 
             projects={sortedProjects}
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ProjectGallery = ({ projects, activeFilter, onFilterChange, setSelectedProject }) => {
+const ProjectCompleted = ({ projects, activeFilter, onFilterChange, setSelectedProject }) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -125,4 +125,4 @@ const ProjectGallery = ({ projects, activeFilter, onFilterChange, setSelectedPro
   );
 };
 
-export default ProjectGallery;
+export default ProjectCompleted;

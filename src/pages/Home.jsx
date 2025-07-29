@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Hero from '../components/Hero';
 import OngoingProjects from '../components/OngoingProjects';
-import ProjectGallery from '../components/ProjectGallery';
+import ProjectCompleted from '../components/ProjectCompleted';
 import { projects } from '../data/projectsData';
 import '../styles/CompletedProjects.css';
 
@@ -41,7 +41,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <ProjectGallery 
+          <ProjectCompleted 
             projects={projects}
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}

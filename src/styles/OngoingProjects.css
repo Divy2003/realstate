@@ -13,11 +13,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    ellipse at top right,
-    rgba(0, 212, 255, 0.05) 0%,
-    transparent 50%
-  );
+  background: radial-gradient(ellipse at top right,
+      rgba(0, 212, 255, 0.05) 0%,
+      transparent 50%);
   pointer-events: none;
 }
 
@@ -52,9 +50,14 @@
 /* Projects Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-8);
   margin-bottom: var(--space-16);
+  justify-content: center;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
 }
 
 /* Project Card */
@@ -110,6 +113,7 @@
 
 /* Progress Circle */
 .progress-circle {
+  top:30%;
   position: relative;
   display: flex;
   align-items: center;
@@ -234,34 +238,34 @@
   .ongoing-projects {
     padding: var(--space-20) 0;
   }
-  
+
   .section-title {
     font-size: var(--text-4xl);
   }
-  
+
   .section-subtitle {
     font-size: var(--text-base);
   }
-  
+
   .projects-grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
     margin-bottom: var(--space-12);
   }
-  
+
   .project-card {
     max-width: 400px;
     margin: 0 auto;
   }
-  
+
   .card-image {
     height: 200px;
   }
-  
+
   .card-content {
     padding: var(--space-4);
   }
-  
+
   .project-title {
     font-size: var(--text-xl);
   }
@@ -271,28 +275,28 @@
   .section-header {
     margin-bottom: var(--space-12);
   }
-  
+
   .section-title {
     font-size: var(--text-3xl);
   }
-  
+
   .projects-grid {
     grid-template-columns: 1fr;
     gap: var(--space-4);
   }
-  
+
   .project-card {
     max-width: none;
   }
-  
+
   .card-image {
     height: 180px;
   }
-  
+
   .project-features {
     gap: var(--space-1);
   }
-  
+
   .feature-tag {
     font-size: 10px;
     padding: 2px var(--space-2);
