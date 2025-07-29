@@ -1,17 +1,58 @@
 export const projects = [
+  // Ongoing Projects
   {
     id: 1,
+    title: "Skyline Towers",
+    location: "Downtown Manhattan",
+    category: "residential",
+    status: "ongoing",
+    progress: 75,
+    completion: "Q2 2024",
+    units: 120,
+    price: "$2.5M - $8.5M",
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    ],
+    description: "Luxury residential complex with 45 floors featuring modern amenities and breathtaking city views.",
+    features: ["Smart Home Technology", "Rooftop Garden", "Fitness Center", "Concierge Service"],
+    clientSatisfaction: 98,
+    awards: ["Best Residential Project 2024"]
+  },
+  {
+    id: 2,
+    title: "Ocean View Residences",
+    location: "Miami Beach",
+    category: "residential",
+    status: "ongoing",
+    progress: 60,
+    completion: "Q4 2024",
+    units: 85,
+    price: "$1.8M - $6.2M",
+    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    ],
+    description: "Beachfront luxury condominiums with panoramic ocean views and world-class amenities.",
+    features: ["Private Beach Access", "Infinity Pool", "Spa & Wellness", "Marina Access"],
+    clientSatisfaction: 97
+  },
+  
+  // Completed Projects
+  {
+    id: 3,
     title: "Crystal Heights",
     location: "New York",
     category: "residential",
+    status: "completed",
     year: "2023",
     units: 150,
-    value: "$450M",
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    price: "$2.1M - $7.5M",
+    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     ],
     description: "A stunning 40-story residential tower featuring luxury amenities and panoramic city views.",
     features: ["Luxury Amenities", "City Views", "Smart Home Tech", "Concierge Service"],
