@@ -97,10 +97,15 @@
 
 /* Completed Grid */
 .completed-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-8);
   margin-bottom: var(--space-16);
+  justify-content: center; /* Center the grid when there are fewer cards */
+  max-width: 1200px;        /* Optional: limit the overall width */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem; 
 }
 
 /* Completed Card */
