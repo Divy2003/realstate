@@ -3,7 +3,6 @@ import { useInView } from 'react-intersection-observer';
 import { projects } from '../data/projectsData';
 import ProjectCard from '../components/ProjectCard';
 import '../styles/Projects.css';
-
 import { useState } from 'react';
 
 const Projects = () => {
@@ -13,6 +12,12 @@ const Projects = () => {
   });
 
   const [selectedProject, setSelectedProject] = useState(null);
+  const [activeTab, setActiveTab] = useState('ongoing');
+
+  const filteredProjects = projects.filter(project => {
+    if (activeTab === 'all') return true;
+    return project.status === activeTab;
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,6 +53,27 @@ const Projects = () => {
         >
           <h1>Our Projects</h1>
           <p>Explore our portfolio of current and upcoming developments</p>
+          
+          <div className="project-tabs">
+            <button 
+              className={`tab-btn ${activeTab === 'ongoing' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ongoing')}
+            >
+              Ongoing
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
+              onClick={() => setActiveTab('upcoming')}
+            >
+              Upcoming
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
+              onClick={() => setActiveTab('completed')}
+            >
+              Completed
+            </button>
+          </div>
         </motion.div>
 
         <motion.div 
@@ -56,7 +82,7 @@ const Projects = () => {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
         >
-          {projects.filter(project => project.status === 'ongoing').map((project, index) => (
+          {filteredProjects.map((project, index) => (
             <ProjectCard 
               key={project.id}
               project={project}
