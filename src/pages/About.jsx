@@ -42,7 +42,7 @@ const About = () => {
       name: "Sarah Johnson",
       position: "CEO & Founder",
       experience: "15+ years",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
       bio: "Visionary leader with extensive experience in luxury real estate development and sustainable architecture."
     },
     {
