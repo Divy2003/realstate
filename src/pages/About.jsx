@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { FaBuilding, FaLeaf, FaHandshake, FaLightbulb } from 'react-icons/fa';
+import { GiAchievement } from 'react-icons/gi';
+import { MdEngineering, MdArchitecture, MdOutlineDesignServices } from 'react-icons/md';
+import { RiTeamFill } from 'react-icons/ri';
+import { BsGraphUp } from 'react-icons/bs';
+import { AiOutlineTrophy, AiOutlineHome, AiOutlineRocket } from 'react-icons/ai';
 import '../styles/About.css';
 
 const About = () => {
@@ -64,22 +70,22 @@ const About = () => {
 
   const values = [
     {
-      icon: "🏗️",
+      icon: <AiOutlineTrophy className="value-icon-svg" />,
       title: "Excellence",
       description: "We strive for perfection in every project, ensuring the highest standards of quality and craftsmanship."
     },
     {
-      icon: "🌱",
+      icon: <FaLeaf className="value-icon-svg" />,
       title: "Sustainability",
       description: "Committed to eco-friendly practices and sustainable development for a better future."
     },
     {
-      icon: "🤝",
+      icon: <FaHandshake className="value-icon-svg" />,
       title: "Integrity",
       description: "Building trust through transparency, honesty, and ethical business practices."
     },
     {
-      icon: "💡",
+      icon: <FaLightbulb className="value-icon-svg" />,
       title: "Innovation",
       description: "Embracing cutting-edge technology and creative solutions in real estate development."
     }

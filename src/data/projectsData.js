@@ -7,9 +7,9 @@ export const projects = [
     category: "residential",
     status: "ongoing",
     progress: 75,
-    completion: "Q2 2024",
+    year: "Q2 2024",
     units: 120,
-    price: "$2.5M - $8.5M",
+    value: "$2.5M - $8.5M",
     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
@@ -18,7 +18,7 @@ export const projects = [
     description: "Luxury residential complex with 45 floors featuring modern amenities and breathtaking city views.",
     features: ["Smart Home Technology", "Rooftop Garden", "Fitness Center", "Concierge Service"],
     clientSatisfaction: 98,
-    awards: ["Best Residential Project 2024"]
+  
   },
   {
     id: 2,
@@ -27,9 +27,9 @@ export const projects = [
     category: "residential",
     status: "ongoing",
     progress: 60,
-    completion: "Q4 2024",
+    year: "2024",
     units: 85,
-    price: "$1.8M - $6.2M",
+    value: "$1.8M - $6.2M",
     image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
@@ -48,7 +48,7 @@ export const projects = [
     status: "completed",
     year: "2023",
     units: 150,
-    price: "$2.1M - $7.5M",
+    value: "$2.1M - $7.5M",
     image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -57,7 +57,7 @@ export const projects = [
     description: "A stunning 40-story residential tower featuring luxury amenities and panoramic city views.",
     features: ["Luxury Amenities", "City Views", "Smart Home Tech", "Concierge Service"],
     clientSatisfaction: 98,
-    awards: ["Best Residential Project 2023", "Sustainable Design Award"]
+
   },
   {
     id: 2,
@@ -76,7 +76,7 @@ export const projects = [
     description: "Modern commercial complex with premium office spaces and retail outlets.",
     features: ["Premium Offices", "Retail Spaces", "Conference Centers", "Parking Garage"],
     clientSatisfaction: 95,
-    awards: ["Commercial Excellence Award", "LEED Gold Certification"]
+ 
   },
   {
     id: 3,
@@ -95,7 +95,7 @@ export const projects = [
     description: "Exclusive luxury villas with private pools and stunning sunset views.",
     features: ["Private Pools", "Sunset Views", "Luxury Finishes", "Landscaped Gardens"],
     clientSatisfaction: 97,
-    awards: ["Luxury Living Award", "Design Excellence"]
+   
   },
   {
     id: 4,
@@ -114,7 +114,7 @@ export const projects = [
     description: "State-of-the-art technology hub with flexible office spaces and innovation labs.",
     features: ["Innovation Labs", "Flexible Spaces", "High-Speed Internet", "Collaboration Areas"],
     clientSatisfaction: 96,
-    awards: ["Tech Innovation Award", "Future Workplace Design"]
+ 
   },
   {
     id: 5,
@@ -133,7 +133,7 @@ export const projects = [
     description: "Eco-friendly apartment complex with river views and sustainable features.",
     features: ["River Views", "Eco-Friendly", "Community Garden", "Bike Storage"],
     clientSatisfaction: 99,
-    awards: ["Green Building Award", "Sustainable Design"]
+ 
   },
   {
     id: 6,
@@ -152,7 +152,7 @@ export const projects = [
     description: "Mixed-use development combining residential, commercial, and retail spaces.",
     features: ["Mixed-Use", "Retail Spaces", "Public Plaza", "Transit Access"],
     clientSatisfaction: 97,
-    awards: ["Urban Development Award", "Community Impact"]
+   
   }
 ];
 

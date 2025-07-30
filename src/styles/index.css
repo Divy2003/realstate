@@ -134,7 +134,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: var(--space-4);
 }
 
-h1 { font-size: var(--text-6xl); }
+h1 { color: var(--accent-primary); 
+  font-size: var(--text-6xl); }
 h2 { font-size: var(--text-5xl); }
 h3 { font-size: var(--text-4xl); }
 h4 { font-size: var(--text-3xl); }

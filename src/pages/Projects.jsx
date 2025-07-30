@@ -52,7 +52,7 @@ const Projects = () => {
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
         >
-          {projects.map((project, index) => (
+          {projects.filter(project => project.status === 'ongoing').map((project, index) => (
             <ProjectCard 
               key={project.id}
               project={project}

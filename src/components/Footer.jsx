@@ -1,5 +1,10 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { HiOutlineMail } from 'react-icons/hi';
+import { FiPhone, FiMapPin } from 'react-icons/fi';
+import { BsArrowRight, BsSend } from 'react-icons/bs';
+import { IoMdCheckmarkCircle } from 'react-icons/io';
 import '../styles/Footer.css';
 
 const Footer = () => {
@@ -34,11 +39,11 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { name: 'Facebook', icon: '📘', url: '#' },
-    { name: 'Twitter', icon: '🐦', url: '#' },
-    { name: 'Instagram', icon: '📷', url: '#' },
-    { name: 'LinkedIn', icon: '💼', url: '#' },
-    { name: 'YouTube', icon: '📺', url: '#' }
+    { name: 'Facebook', icon: <FaFacebook />, url: '#' },
+    { name: 'Twitter', icon: <FaTwitter />, url: '#' },
+    { name: 'Instagram', icon: <FaInstagram />, url: '#' },
+    { name: 'LinkedIn', icon: <FaLinkedin />, url: '#' },
+    { name: 'YouTube', icon: <FaYoutube />, url: '#' }
   ];
 
   const quickLinks = [
@@ -166,7 +171,7 @@ const Footer = () => {
             <h3 className="section__title">Get In Touch</h3>
             <div className="contact__info">
               <div className="contact__item">
-                <span className="contact__icon">📍</span>
+                <span className="contact__icon"><FiMapPin /></span>
                 <div className="contact__details">
                   <span className="contact__label">Address</span>
                   <span className="contact__value">
@@ -176,14 +181,14 @@ const Footer = () => {
                 </div>
               </div>
               <div className="contact__item">
-                <span className="contact__icon">📞</span>
+                <span className="contact__icon"><FiPhone /></span>
                 <div className="contact__details">
                   <span className="contact__label">Phone</span>
                   <span className="contact__value">+1 (555) 123-4567</span>
                 </div>
               </div>
               <div className="contact__item">
-                <span className="contact__icon">✉️</span>
+                <span className="contact__icon"><HiOutlineMail /></span>
                 <div className="contact__details">
                   <span className="contact__label">Email</span>
                   <span className="contact__value">info@eliteestate.com</span>

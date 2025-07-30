@@ -2,17 +2,24 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import Hero from '../components/Hero';
-import OngoingProjects from '../components/OngoingProjects';
 import ProjectCompleted from '../components/ProjectCompleted';
 import { projects } from '../data/projectsData';
 import '../styles/CompletedProjects.css';
+import ProjectCard from '../components/ProjectCard';
+import '../styles/ongoingProjects.css';
 
 const Home = () => {
+  // For completed section
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
-  
+  // For ongoing section
+  const [ongoingRef, ongoingInView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -23,7 +30,36 @@ const Home = () => {
   return (
     <main className="main-content">
       <Hero />
-      <OngoingProjects />
+      {/* Ongoing Projects Section Styled Like Completed Projects */}
+      <section id="ongoing" className="ongoing-projects" ref={ongoingRef}>
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: -30 }}
+            animate={ongoingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="section-title">
+              Ongoing <span className="title-accent">Projects</span>
+            </h2>
+            <p className="section-subtitle">
+              Discover our current developments that are reshaping skylines and creating tomorrow's landmarks
+            </p>
+          </motion.div>
+
+          <div className="projects-grid">
+            {projects.filter(project => project.status === 'ongoing').map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                inView={ongoingInView}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       
       <section id="completed" className="completed-projects" ref={ref}>
         <div className="container">

@@ -77,11 +77,11 @@ const ProjectCard = ({ project, index, inView }) => {
           </div>
           <div className="detail-item">
             <span className="detail-label">Price Range:</span>
-            <span className="detail-value">{project.price}</span>
+            <span className="detail-value">{project.value}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">{isOngoing ? 'Completion:' : 'Year:'}</span>
-            <span className="detail-value">{isOngoing ? project.completion : project.year}</span>
+            <span className="detail-label">Year:</span>
+            <span className="detail-value">{ project.year}</span>
           </div>
         </div>
 
@@ -98,19 +98,9 @@ const ProjectCard = ({ project, index, inView }) => {
           )}
         </div>
 
-        {project.awards && project.awards.length > 0 && (
-          <div className="project-awards">
-            {project.awards.map((award, idx) => (
-              <span key={idx} className="award-badge">
-                🏆 {award}
-              </span>
-            ))}
-          </div>
-        )}
+       
 
-        <Link to={`/projects/${project.id}`} className="btn btn-primary card-btn">
-          View Details
-        </Link>
+        
       </div>
     </motion.div>
   );
