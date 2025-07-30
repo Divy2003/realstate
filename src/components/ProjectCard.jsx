@@ -79,13 +79,11 @@ const ProjectCard = ({ project, index, inView, onClick }) => {
             <span className="detail-value">{project.units}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">Price Range:</span>
-            <span className="detail-value">{project.value}</span>
-          </div>
-          <div className="detail-item">
             <span className="detail-label">Year:</span>
             <span className="detail-value">{ project.year}</span>
           </div>
+          
+          
         </div>
 
         <div className="project-features">

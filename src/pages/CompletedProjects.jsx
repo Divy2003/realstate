@@ -116,20 +116,7 @@ const CompletedProjects = () => {
                   ))}
                 </div>
 
-                <div className="modal-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">Year Completed</span>
-                    <span className="stat-value">{selectedProject.year}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Total Units</span>
-                    <span className="stat-value">{selectedProject.units}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Project Value</span>
-                    <span className="stat-value">{selectedProject.value}</span>
-                  </div>
-                </div>
+                
               </div>
             </motion.div>
           </motion.div>

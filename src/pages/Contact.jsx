@@ -39,13 +39,13 @@ const Contact = () => {
     {
       icon: <MdLocationOn className="contact-icon" />,
       title: "Visit Our Office",
-      details: ["123 Elite Street, Luxury District", "New York, NY 10001"],
+      details: ["Anusthan, Near Rythm Heights", "Zundal, Gujarat, 382421"],
       action: "Get Directions"
     },
     {
       icon: <MdPhone className="contact-icon" />,
       title: "Call Us",
-      details: ["+1 (555) 123-4567", "+1 (555) 123-4568"],
+      details: ["+91 9376762299"],
       action: "Call Now"
     },
     {
@@ -57,14 +57,14 @@ const Contact = () => {
     {
       icon: <MdAccessTime className="contact-icon" />,
       title: "Business Hours",
-      details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 10:00 AM - 4:00 PM"],
+      details: ["Monday - Friday: 10:00 AM - 6:00 PM", "Saturday - Sunday: 10:00 AM - 7:00 PM"],
       action: "Schedule Meeting"
     }
   ];
 
   const services = [
     "Residential Development",
-    "Commercial Projects",
+    
     "Property Management",
     "Real Estate Consulting",
     "Investment Advisory",

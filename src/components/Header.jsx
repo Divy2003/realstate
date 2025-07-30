@@ -49,8 +49,8 @@ const Header = () => {
             whileTap={{ scale: 0.95 }}
           >
             <Link to="/" onClick={closeMenu}>
-              <span className="logo__text">Elite</span>
-              <span className="logo__accent">Estate</span>
+              <span className="logo__text"></span>
+              <span className="logo__accent">Anusthan</span>
             </Link>
           </motion.div>
 

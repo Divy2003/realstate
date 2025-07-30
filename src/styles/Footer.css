@@ -78,7 +78,7 @@
 }
 
 .logo__accent::after {
-  content: '';
+  
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -150,6 +150,7 @@
 
 .links__link {
   color: var(--text-secondary);
+  white-space: nowrap;
   text-decoration: none;
   transition: var(--transition-fast);
   position: relative;
@@ -167,7 +168,7 @@
 
 .links__link:hover {
   color: var(--text-primary);
-  padding-left: var(--space-5);
+  
 }
 
 .links__link:hover::before {

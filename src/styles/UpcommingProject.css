@@ -1,0 +1,6 @@
+.Upcomming-Project{
+    padding: var(--space-32) 0;
+    background: var(--secondary-bg);
+    position: relative;
+    overflow: hidden;
+}

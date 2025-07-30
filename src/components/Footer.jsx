@@ -57,7 +57,7 @@ const Footer = () => {
 
   const services = [
     { name: 'Residential Development', url: '#' },
-    { name: 'Commercial Projects', url: '#' },
+   
     { name: 'Property Management', url: '#' },
     { name: 'Real Estate Consulting', url: '#' },
     { name: 'Investment Advisory', url: '#' },
@@ -105,8 +105,8 @@ const Footer = () => {
           {/* Company Info */}
           <motion.div className="footer__section footer__company" variants={itemVariants}>
             <div className="company__logo">
-              <span className="logo__text">Elite</span>
-              <span className="logo__accent">Estate</span>
+              <span className="logo__text"></span>
+              <span className="logo__accent">Anusthan</span>
             </div>
             <p className="company__description">
               Creating exceptional real estate experiences with innovative design, 
@@ -175,8 +175,8 @@ const Footer = () => {
                 <div className="contact__details">
                   <span className="contact__label">Address</span>
                   <span className="contact__value">
-                    123 Elite Street, Luxury District<br />
-                    New York, NY 10001
+                    Anusthan, Near Rythm Heights<br />
+                    Zundal, Gujarat, 382421
                   </span>
                 </div>
               </div>
@@ -184,7 +184,7 @@ const Footer = () => {
                 <span className="contact__icon"><FiPhone /></span>
                 <div className="contact__details">
                   <span className="contact__label">Phone</span>
-                  <span className="contact__value">+1 (555) 123-4567</span>
+                  <span className="contact__value">+91 9376762299</span>
                 </div>
               </div>
               <div className="contact__item">

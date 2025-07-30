@@ -1,6 +1,26 @@
 import { progress } from "framer-motion";
 
 export const projects = [
+  // Upcoming Project (sample)
+  {
+    id: 1001,
+    title: "Sunset Valley Heights",
+    location: "Los Angeles, CA",
+    category: "residential",
+    status: "ongoing",
+    progress: 90,
+    year: "2025",
+    units: 90,
+    value: "$1.5M - $5.0M",
+    image: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1000&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1000&q=80"
+    ],
+    description: "A new luxury living experience coming soon to LA, blending modern design and nature.",
+    features: ["Eco-Friendly Materials", "Panoramic Views", "Community Park", "Smart Security"],
+    clientSatisfaction: null
+  },
+
   // Ongoing Projects
   {
     id: 1,
@@ -67,6 +87,7 @@ export const projects = [
     title: "Marina Bay Complex",
     location: "San Francisco",
     category: "commercial",
+    status: "completed",
     year: "2022",
     units: 75,
     value: "$320M",
@@ -85,6 +106,7 @@ export const projects = [
     id: 3,
     title: "Sunset Villas",
     location: "Los Angeles",
+    status: "completed",
     category: "residential",
     year: "2023",
     units: 24,
@@ -104,6 +126,7 @@ export const projects = [
     id: 4,
     title: "Tech Hub Center",
     location: "Seattle",
+    status: "completed",
     category: "commercial",
     year: "2022",
     units: 200,
@@ -122,6 +145,7 @@ export const projects = [
   {
     id: 5,
     title: "Riverside Apartments",
+    status: "upcoming",
     location: "Portland",
     category: "residential",
     year: "2021",
@@ -141,6 +165,7 @@ export const projects = [
   {
     id: 6,
     title: "Downtown Plaza",
+    status: "upcoming",
     location: "Chicago",
     category: "mixed",
     year: "2023",

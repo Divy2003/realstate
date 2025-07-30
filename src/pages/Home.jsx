@@ -6,6 +6,9 @@ import ProjectCompleted from '../components/ProjectCompleted';
 import { projects } from '../data/projectsData';
 import '../styles/CompletedProjects.css';
 import ProjectCard from '../components/ProjectCard';
+import UpcommingProjects from '../components/UpcommingProjects';
+import '../styles/Home.css';
+import OngoingProject from '../components/OngoingProject';
 
 
 const Home = () => {
@@ -30,6 +33,30 @@ const Home = () => {
   return (
     <main className="main-content">
       <Hero />
+      {/* Upcoming Projects Section */}
+      <section id="upcoming" className="upcoming-projects">
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="section-title">
+              Upcoming <span className="title-accent">Projects</span>
+            </h2>
+            <p className="section-subtitle">
+              Get a sneak peek at our future developments that will redefine urban living
+            </p>
+          </motion.div>
+
+          <UpcommingProjects
+            inView={true}
+            onProjectClick={setSelectedProject}
+          />
+        </div>
+      </section>
+
       {/* Ongoing Projects Section Styled Like Completed Projects */}
       <section id="ongoing" className="ongoing-projects" ref={ongoingRef}>
         <div className="container">
@@ -47,17 +74,10 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <div className="projects-grid">
-            {projects.filter(project => project.status === 'ongoing').map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-                inView={ongoingInView}
-                onClick={() => setSelectedProject(project)}
-              />
-            ))}
-          </div>
+          <OngoingProject
+            inView={ongoingInView}
+            onProjectClick={setSelectedProject}
+          />
         </div>
       </section>
 
@@ -134,6 +154,8 @@ const Home = () => {
           )}
         </AnimatePresence>
       </section>
+
+      
     </main>
   );
 };
