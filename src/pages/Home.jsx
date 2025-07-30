@@ -6,7 +6,7 @@ import ProjectCompleted from '../components/ProjectCompleted';
 import { projects } from '../data/projectsData';
 import '../styles/CompletedProjects.css';
 import ProjectCard from '../components/ProjectCard';
-import '../styles/ongoingProjects.css';
+
 
 const Home = () => {
   // For completed section
