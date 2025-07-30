@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import '../styles/ongoingProjects.css';
+
 
 const ProjectCard = ({ project, index, inView, onClick }) => {
   const isOngoing = project.status === 'ongoing';
