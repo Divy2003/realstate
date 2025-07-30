@@ -54,6 +54,7 @@ const Home = () => {
                 project={project}
                 index={index}
                 inView={ongoingInView}
+                onClick={() => setSelectedProject(project)}
               />
             ))}
           </div>

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import '../styles/ongoingProjects.css';
 
-const ProjectCard = ({ project, index, inView }) => {
+const ProjectCard = ({ project, index, inView, onClick }) => {
   const isOngoing = project.status === 'ongoing';
   const cardVariants = {
     hidden: { 
@@ -29,6 +29,8 @@ const ProjectCard = ({ project, index, inView }) => {
         y: -10,
         transition: { duration: 0.3 }
       }}
+      onClick={onClick}
+      style={onClick ? { cursor: 'pointer' } : {}}
     >
       <div className="card-image">
         <img src={project.image} alt={project.title} />

@@ -1,3 +1,5 @@
+import { progress } from "framer-motion";
+
 export const projects = [
   // Ongoing Projects
   {
@@ -45,7 +47,8 @@ export const projects = [
     title: "Crystal Heights",
     location: "New York",
     category: "residential",
-    status: "completed",
+    status: "ongoing",
+    progress: 10,
     year: "2023",
     units: 150,
     value: "$2.1M - $7.5M",
