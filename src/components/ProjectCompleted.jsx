@@ -4,25 +4,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
 import { 
   fetchProjects, 
-  selectProjectsLoading, 
-  selectProjectsByStatus 
+  selectProjectsByStatus, 
+  selectProjectsLoadingByStatus 
 } from '../store/slices/projectsSlice';
 
 const ProjectCompleted = ({ activeFilter, onFilterChange, setSelectedProject }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectProjectsLoading);
   
-  // Get completed projects directly from the selector
+  // Use the updated selectors
   const completedProjects = useSelector(selectProjectsByStatus('completed'));
+  const isLoading = useSelector(selectProjectsLoadingByStatus('completed'));
 
   useEffect(() => {
-    // Fetch completed projects
-    dispatch(fetchProjects({ 
-      status: 'completed', 
-      limit: 12,
-      page: 1
-    }));
-  }, [dispatch]);
+    // Only fetch if we don't have completed projects already
+    if (completedProjects.length === 0 && !isLoading) {
+      dispatch(fetchProjects({ 
+        status: 'completed', 
+        limit: 12,
+        page: 1
+      }));
+    }
+  }, [dispatch, completedProjects.length, isLoading]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -50,7 +53,6 @@ const ProjectCompleted = ({ activeFilter, onFilterChange, setSelectedProject }) 
   const filters = [
     { id: 'all', label: 'All Projects' },
     { id: 'residential', label: 'Residential' },
-   
     { id: 'mixed', label: 'Mixed-Use' }
   ];
 

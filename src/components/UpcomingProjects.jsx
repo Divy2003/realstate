@@ -3,25 +3,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
 import { 
   fetchProjects, 
-  selectProjectsLoading, 
-  selectProjectsByStatus 
+  selectProjectsByStatus, 
+  selectProjectsLoadingByStatus 
 } from '../store/slices/projectsSlice';
 
 const UpcomingProjects = ({ inView, onProjectClick }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectProjectsLoading);
   
-  // Get upcoming projects directly from the selector
+  // Use the updated selectors
   const upcomingProjects = useSelector(selectProjectsByStatus('upcoming'));
+  const isLoading = useSelector(selectProjectsLoadingByStatus('upcoming'));
 
   useEffect(() => {
-    // Fetch upcoming projects
-    dispatch(fetchProjects({ 
-      status: 'upcoming', 
-      limit: 6,
-      page: 1
-    }));
-  }, [dispatch]);
+    // Only fetch if we don't have upcoming projects already
+    if (upcomingProjects.length === 0 && !isLoading) {
+      dispatch(fetchProjects({ 
+        status: 'upcoming', 
+        limit: 6,
+        page: 1
+      }));
+    }
+  }, [dispatch, upcomingProjects.length, isLoading]);
+  
   if (isLoading) {
     return (
       <div className="loading-state">

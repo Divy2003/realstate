@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProjects,
   setFilters,
-  selectProjects,
-  selectProjectsLoading,
+  selectProjectsByStatus,
+  selectProjectsLoadingByStatus,
   selectProjectsError,
   selectProjectsFilters,
   selectProjectsPagination
@@ -22,8 +22,18 @@ const Projects = () => {
     triggerOnce: true
   });
 
-  const projects = useSelector(selectProjects);
-  const isLoading = useSelector(selectProjectsLoading);
+  // Get projects for all statuses
+  const ongoingProjects = useSelector(selectProjectsByStatus('ongoing'));
+  const upcomingProjects = useSelector(selectProjectsByStatus('upcoming'));
+  const completedProjects = useSelector(selectProjectsByStatus('completed'));
+  const allProjects = useSelector(selectProjectsByStatus('all'));
+
+  // Get loading states
+  const ongoingLoading = useSelector(selectProjectsLoadingByStatus('ongoing'));
+  const upcomingLoading = useSelector(selectProjectsLoadingByStatus('upcoming'));
+  const completedLoading = useSelector(selectProjectsLoadingByStatus('completed'));
+  const allLoading = useSelector(selectProjectsLoadingByStatus('all'));
+
   const error = useSelector(selectProjectsError);
   const filters = useSelector(selectProjectsFilters);
   const pagination = useSelector(selectProjectsPagination);
@@ -32,23 +42,80 @@ const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
 
+  // Get the appropriate projects and loading state based on active tab
+  const getCurrentProjects = () => {
+    switch (activeTab) {
+      case 'ongoing':
+        return ongoingProjects;
+      case 'upcoming':
+        return upcomingProjects;
+      case 'completed':
+        return completedProjects;
+      case 'all':
+      default:
+        // Combine all projects for 'all' tab
+        return [...ongoingProjects, ...upcomingProjects, ...completedProjects];
+    }
+  };
+
+  const getCurrentLoading = () => {
+    switch (activeTab) {
+      case 'ongoing':
+        return ongoingLoading;
+      case 'upcoming':
+        return upcomingLoading;
+      case 'completed':
+        return completedLoading;
+      case 'all':
+      default:
+        return ongoingLoading || upcomingLoading || completedLoading || allLoading;
+    }
+  };
+
+  const filteredProjects = getCurrentProjects();
+  const isLoading = getCurrentLoading();
+
   useEffect(() => {
-    // Fetch projects when component mounts
-    let statusFilter = activeTab === 'all' ? '' : activeTab;
-    dispatch(fetchProjects({
-      page: 1,
-      limit: 12,
-      status: statusFilter
-    }));
-  }, [dispatch, activeTab]);
+    // Fetch projects based on active tab
+    const fetchProjectsForTab = async () => {
+      if (activeTab === 'all') {
+        // Fetch all types for 'all' tab
+        const promises = [];
+        
+        if (ongoingProjects.length === 0) {
+          promises.push(dispatch(fetchProjects({ status: 'ongoing', limit: 12 })));
+        }
+        if (upcomingProjects.length === 0) {
+          promises.push(dispatch(fetchProjects({ status: 'upcoming', limit: 12 })));
+        }
+        if (completedProjects.length === 0) {
+          promises.push(dispatch(fetchProjects({ status: 'completed', limit: 12 })));
+        }
+        
+        if (promises.length > 0) {
+          await Promise.all(promises);
+        }
+      } else {
+        // Fetch specific status
+        const currentProjects = getCurrentProjects();
+        if (currentProjects.length === 0) {
+          dispatch(fetchProjects({
+            page: 1,
+            limit: 12,
+            status: activeTab
+          }));
+        }
+      }
+    };
+
+    fetchProjectsForTab();
+  }, [dispatch, activeTab, ongoingProjects.length, upcomingProjects.length, completedProjects.length]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     const statusFilter = tab === 'all' ? '' : tab;
     dispatch(setFilters({ status: statusFilter }));
   };
-
-  const filteredProjects = projects;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -81,7 +148,15 @@ const Projects = () => {
             <h2>Error Loading Projects</h2>
             <p>{error}</p>
             <button
-              onClick={() => dispatch(fetchProjects())}
+              onClick={() => {
+                if (activeTab === 'all') {
+                  dispatch(fetchProjects({ status: 'ongoing', limit: 12 }));
+                  dispatch(fetchProjects({ status: 'upcoming', limit: 12 }));
+                  dispatch(fetchProjects({ status: 'completed', limit: 12 }));
+                } else {
+                  dispatch(fetchProjects({ status: activeTab, limit: 12 }));
+                }
+              }}
               className="btn btn-primary"
             >
               Try Again
@@ -116,25 +191,25 @@ const Projects = () => {
               className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
               onClick={() => handleTabChange('all')}
             >
-              All Projects
+              All Projects ({ongoingProjects.length + upcomingProjects.length + completedProjects.length})
             </button>
             <button
               className={`tab-btn ${activeTab === 'ongoing' ? 'active' : ''}`}
               onClick={() => handleTabChange('ongoing')}
             >
-              Ongoing
+              Ongoing ({ongoingProjects.length})
             </button>
             <button
               className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
               onClick={() => handleTabChange('upcoming')}
             >
-              Upcoming
+              Upcoming ({upcomingProjects.length})
             </button>
             <button
               className={`tab-btn ${activeTab === 'completed' ? 'active' : ''}`}
               onClick={() => handleTabChange('completed')}
             >
-              Completed
+              Completed ({completedProjects.length})
             </button>
           </div>
         </motion.div>
@@ -142,7 +217,7 @@ const Projects = () => {
         {isLoading ? (
           <div className="loading-state">
             <div className="loading-spinner"></div>
-            <p>Loading projects...</p>
+            <p>Loading {activeTab === 'all' ? 'all' : activeTab} projects...</p>
           </div>
         ) : (
           <motion.div
@@ -164,7 +239,7 @@ const Projects = () => {
               ))
             ) : (
               <div className="empty-state">
-                <h3>No projects found</h3>
+                <h3>No {activeTab === 'all' ? '' : activeTab} projects found</h3>
                 <p>No projects match the current filter criteria.</p>
                 {isAdmin && (
                   <button className="btn btn-primary">
@@ -174,6 +249,16 @@ const Projects = () => {
               </div>
             )}
           </motion.div>
+        )}
+
+        {/* Pagination could be added here if needed */}
+        {filteredProjects.length > 0 && pagination && pagination.pages > 1 && (
+          <div className="pagination">
+            <p>
+              Showing {filteredProjects.length} of {pagination.total} projects
+            </p>
+            {/* Add pagination controls here if needed */}
+          </div>
         )}
       </div>
 

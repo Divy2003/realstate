@@ -1,22 +1,25 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
-import { fetchProjects, selectProjects, selectProjectsLoading, selectProjectsByStatus } from '../store/slices/projectsSlice';
+import { 
+  fetchProjects, 
+  selectProjectsByStatus, 
+  selectProjectsLoadingByStatus 
+} from '../store/slices/projectsSlice';
 
 const OngoingProject = ({ inView, onProjectClick }) => {
   const dispatch = useDispatch();
-  const projects = useSelector(selectProjects);
-  const isLoading = useSelector(selectProjectsLoading);
   
-  // Use the selector to filter projects by status
-  const ongoingProjects = useSelector(state => 
-    selectProjectsByStatus('ongoing')(state)
-  );
+  // Use the updated selectors
+  const ongoingProjects = useSelector(selectProjectsByStatus('ongoing'));
+  const isLoading = useSelector(selectProjectsLoadingByStatus('ongoing'));
 
   useEffect(() => {
-    // Fetch ongoing projects
-    dispatch(fetchProjects({ status: 'ongoing', limit: 6 }));
-  }, [dispatch]);
+    // Only fetch if we don't have ongoing projects already
+    if (ongoingProjects.length === 0 && !isLoading) {
+      dispatch(fetchProjects({ status: 'ongoing', limit: 6 }));
+    }
+  }, [dispatch, ongoingProjects.length, isLoading]);
 
   if (isLoading) {
     return (

@@ -1,30 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useDispatch } from 'react-redux';
 import Hero from '../components/Hero';
 import ProjectCompleted from '../components/ProjectCompleted';
-import { projects } from '../data/projectsData';
-import '../styles/CompletedProjects.css';
 import ProjectCard from '../components/ProjectCard';
 import UpcomingProjects from '../components/UpcomingProjects';
-import '../styles/Home.css';
 import OngoingProject from '../components/OngoingProject';
-
+import { fetchProjects } from '../store/slices/projectsSlice';
+import { projects } from '../data/projectsData';
+import '../styles/CompletedProjects.css';
+import '../styles/Home.css';
 
 const Home = () => {
+  const dispatch = useDispatch();
+  
   // For completed section
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
+  
   // For ongoing section
   const [ongoingRef, ongoingInView] = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
 
+  // For upcoming section
+  const [upcomingRef, upcomingInView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true
+  });
+
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+
+  // Pre-fetch all project types when component mounts
+  useEffect(() => {
+    // This will ensure all project types are loaded when the page loads
+    // Each component will handle its own fetching, but this provides a fallback
+    const fetchAllProjects = async () => {
+      try {
+        // Fetch all project types in parallel
+        await Promise.all([
+          dispatch(fetchProjects({ status: 'upcoming', limit: 6 })),
+          dispatch(fetchProjects({ status: 'ongoing', limit: 6 })),
+          dispatch(fetchProjects({ status: 'completed', limit: 12 }))
+        ]);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+
+    fetchAllProjects();
+  }, [dispatch]);
 
   const handleFilterChange = (filterId) => {
     setActiveFilter(filterId);
@@ -33,13 +63,14 @@ const Home = () => {
   return (
     <main className="main-content">
       <Hero />
+      
       {/* Upcoming Projects Section */}
-      <section id="upcoming" className="upcoming-projects">
+      <section id="upcoming" className="upcoming-projects" ref={upcomingRef}>
         <div className="container">
           <motion.div
             className="section-header"
             initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={upcomingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -30 }}
             transition={{ duration: 0.8 }}
           >
             <h2 className="section-title">
@@ -51,13 +82,13 @@ const Home = () => {
           </motion.div>
 
           <UpcomingProjects
-            inView={true}
+            inView={upcomingInView}
             onProjectClick={setSelectedProject}
           />
         </div>
       </section>
 
-      {/* Ongoing Projects Section Styled Like Completed Projects */}
+      {/* Ongoing Projects Section */}
       <section id="ongoing" className="ongoing-projects" ref={ongoingRef}>
         <div className="container">
           <motion.div
@@ -81,7 +112,7 @@ const Home = () => {
         </div>
       </section>
 
-      
+      {/* Completed Projects Section */}
       <section id="completed" className="completed-projects" ref={ref}>
         <div className="container">
           <motion.div
@@ -129,32 +160,34 @@ const Home = () => {
                   ×
                 </button>
                 
-                <div className="modal-gallery">
-                  {selectedProject.gallery.map((image, idx) => (
-                    <img key={idx} src={image} alt={`${selectedProject.title} ${idx + 1}`} />
-                  ))}
-                </div>
+                {selectedProject.gallery && (
+                  <div className="modal-gallery">
+                    {selectedProject.gallery.map((image, idx) => (
+                      <img key={idx} src={image} alt={`${selectedProject.title} ${idx + 1}`} />
+                    ))}
+                  </div>
+                )}
                 
                 <div className="modal-info">
                   <h3>{selectedProject.title}</h3>
                   <p className="modal-location">{selectedProject.location}</p>
                   <p className="modal-description">{selectedProject.description}</p>
                   
-                  <div className="modal-features">
-                    {selectedProject.features.map((feature, idx) => (
-                      <span key={idx} className="modal-feature">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
+                  {selectedProject.features && (
+                    <div className="modal-features">
+                      {selectedProject.features.map((feature, idx) => (
+                        <span key={idx} className="modal-feature">
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </section>
-
-      
     </main>
   );
 };

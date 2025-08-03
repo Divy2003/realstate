@@ -9,8 +9,20 @@ import '../styles/AdminDashboard.css';
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { projects, isLoading, error } = useSelector((state) => state.projects);
+  const { 
+    projectsByStatus, 
+    loading, 
+    error 
+  } = useSelector((state) => state.projects);
+  
   const [activeTab, setActiveTab] = useState('overview');
+  
+  // Combine all projects for admin view
+  const allProjects = [
+    ...(projectsByStatus?.ongoing || []),
+    ...(projectsByStatus?.upcoming || []),
+    ...(projectsByStatus?.completed || [])
+  ];
 
   useEffect(() => {
     dispatch(fetchProjects());
@@ -40,10 +52,10 @@ const AdminDashboard = () => {
   };
 
   const stats = {
-    totalProjects: projects.length,
-    featuredProjects: projects.filter(p => p.featured).length,
-    completedProjects: projects.filter(p => p.status === 'completed').length,
-    ongoingProjects: projects.filter(p => p.status === 'under-construction').length,
+    totalProjects: allProjects.length,
+    featuredProjects: allProjects.filter(p => p.featured).length,
+    completedProjects: projectsByStatus?.completed?.length || 0,
+    ongoingProjects: (projectsByStatus?.ongoing || []).length + (projectsByStatus?.['under-construction'] || []).length,
   };
 
   const pageVariants = {
@@ -178,7 +190,7 @@ const AdminDashboard = () => {
                 </Link>
               </div>
 
-              {isLoading ? (
+              {loading?.all ? (
                 <div className="loading-state">
                   <div className="loading-spinner"></div>
                   <p>Loading projects...</p>
@@ -202,7 +214,7 @@ const AdminDashboard = () => {
                     <div className="table-cell">Featured</div>
                     <div className="table-cell">Actions</div>
                   </div>
-                  {projects.map((project) => (
+                  {allProjects.map((project) => (
                     <div key={project.id} className="table-row">
                       <div className="table-cell project-info">
                         <img
