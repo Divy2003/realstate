@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
+import { fetchSettings, selectCompanyInfo } from '../store/slices/settingsSlice';
 import '../styles/Header.css';
 
 const Header = () => {
+  const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const companyInfo = useSelector(selectCompanyInfo);
+
+  useEffect(() => {
+    dispatch(fetchSettings());
+  }, [dispatch]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,8 +57,18 @@ const Header = () => {
             whileTap={{ scale: 0.95 }}
           >
             <Link to="/" onClick={closeMenu}>
-              <span className="logo__text"></span>
-              <span className="logo__accent">Anusthan</span>
+              {companyInfo?.logo?.url ? (
+                <img
+                  src={companyInfo.logo.url}
+                  alt={companyInfo.name || 'Company Logo'}
+                  className="logo__image"
+                />
+              ) : (
+                <>
+                  <span className="logo__text"></span>
+                  <span className="logo__accent">{companyInfo?.name || 'Anusthan'}</span>
+                </>
+              )}
             </Link>
           </motion.div>
 

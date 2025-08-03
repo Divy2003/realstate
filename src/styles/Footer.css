@@ -77,6 +77,13 @@
   position: relative;
 }
 
+.logo__image {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: var(--space-4);
+}
+
 .logo__accent::after {
   
   position: absolute;

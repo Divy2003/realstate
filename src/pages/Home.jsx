@@ -6,7 +6,7 @@ import ProjectCompleted from '../components/ProjectCompleted';
 import { projects } from '../data/projectsData';
 import '../styles/CompletedProjects.css';
 import ProjectCard from '../components/ProjectCard';
-import UpcommingProjects from '../components/UpcommingProjects';
+import UpcomingProjects from '../components/UpcomingProjects';
 import '../styles/Home.css';
 import OngoingProject from '../components/OngoingProject';
 
@@ -50,7 +50,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <UpcommingProjects
+          <UpcomingProjects
             inView={true}
             onProjectClick={setSelectedProject}
           />
@@ -98,8 +98,7 @@ const Home = () => {
             </p>
           </motion.div>
 
-          <ProjectCompleted 
-            projects={projects}
+          <ProjectCompleted
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
             setSelectedProject={setSelectedProject}

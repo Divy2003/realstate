@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useSelector } from 'react-redux';
 import { FaBuilding, FaLeaf, FaHandshake, FaLightbulb } from 'react-icons/fa';
 import { GiAchievement } from 'react-icons/gi';
 import { MdEngineering, MdArchitecture, MdOutlineDesignServices } from 'react-icons/md';
 import { RiTeamFill } from 'react-icons/ri';
 import { BsGraphUp } from 'react-icons/bs';
 import { AiOutlineTrophy, AiOutlineHome, AiOutlineRocket } from 'react-icons/ai';
+import { selectCompanyInfo } from '../store/slices/settingsSlice';
 import '../styles/About.css';
 
 const About = () => {
@@ -13,6 +15,8 @@ const About = () => {
     threshold: 0.1,
     triggerOnce: true
   });
+
+  const companyInfo = useSelector(selectCompanyInfo);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -92,7 +96,7 @@ const About = () => {
   ];
 
   const milestones = [
-    { year: "2008", event: "Company Founded", description: "Elite Estate was established with a vision to transform real estate development." },
+    { year: "2008", event: "Company Founded", description: `${companyInfo?.name || 'Elite Estate'} was established with a vision to transform real estate development.` },
     { year: "2012", event: "First Major Project", description: "Completed our first luxury residential complex, setting new industry standards." },
     { year: "2016", event: "Sustainability Focus", description: "Launched our green building initiative, becoming a leader in sustainable development." },
     { year: "2020", event: "Digital Innovation", description: "Integrated smart home technology and digital solutions across all projects." },
@@ -110,9 +114,9 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="hero-title">About Elite Estate</h1>
+            <h1 className="hero-title">About {companyInfo?.name || 'Elite Estate'}</h1>
             <p className="hero-subtitle">
-              Building the future of real estate with innovation, sustainability, and excellence.
+              {companyInfo?.tagline || 'Building the future of real estate with innovation, sustainability, and excellence.'}
             </p>
             <div className="hero-stats">
               <div className="stat">
@@ -283,7 +287,7 @@ const About = () => {
           >
             <h2>Ready to Build Your Dream?</h2>
             <p>
-              Join hundreds of satisfied clients who have trusted Elite Estate 
+              Join hundreds of satisfied clients who have trusted {companyInfo?.name || 'Elite Estate'}
               with their most important real estate investments.
             </p>
             <motion.button

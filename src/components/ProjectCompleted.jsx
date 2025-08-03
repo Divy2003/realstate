@@ -1,9 +1,28 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
+import { 
+  fetchProjects, 
+  selectProjectsLoading, 
+  selectProjectsByStatus 
+} from '../store/slices/projectsSlice';
 
-const ProjectCompleted = ({ projects, activeFilter, onFilterChange, setSelectedProject }) => {
+const ProjectCompleted = ({ activeFilter, onFilterChange, setSelectedProject }) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectProjectsLoading);
+  
+  // Get completed projects directly from the selector
+  const completedProjects = useSelector(selectProjectsByStatus('completed'));
+
+  useEffect(() => {
+    // Fetch completed projects
+    dispatch(fetchProjects({ 
+      status: 'completed', 
+      limit: 12,
+      page: 1
+    }));
+  }, [dispatch]);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -35,47 +54,62 @@ const ProjectCompleted = ({ projects, activeFilter, onFilterChange, setSelectedP
     { id: 'mixed', label: 'Mixed-Use' }
   ];
 
-  const completedProjects = projects.filter(project => project.status === 'completed');
-const filteredProjects = activeFilter === 'all'
-  ? completedProjects
-  : completedProjects.filter(project => project.category === activeFilter);
+  const filteredProjects = activeFilter === 'all'
+    ? completedProjects
+    : completedProjects.filter(project => project.category === activeFilter);
 
-return (
-  <>
-    {/* Filter Buttons */}
-    <motion.div
-      className="filter-buttons"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      {filters.map((filter) => (
-        <motion.button
-          key={filter.id}
-          className={`filter-btn ${activeFilter === filter.id ? 'active' : ''}`}
-          onClick={() => onFilterChange(filter.id)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {filter.label}
-        </motion.button>
-      ))}
-    </motion.div>
+  if (isLoading) {
+    return (
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
+        <p>Loading completed projects...</p>
+      </div>
+    );
+  }
 
-    {/* Projects Grid */}
-    <div className="projects-grid">
-      {filteredProjects.map((project, index) => (
-        <ProjectCard
-          key={project.id}
-          project={project}
-          index={index}
-          inView={true}
-          onClick={() => setSelectedProject(project)}
-        />
-      ))}
-    </div>
-  </>
-);
+  return (
+    <>
+      {/* Filter Buttons */}
+      <motion.div
+        className="filter-buttons"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {filters.map((filter) => (
+          <motion.button
+            key={filter.id}
+            className={`filter-btn ${activeFilter === filter.id ? 'active' : ''}`}
+            onClick={() => onFilterChange(filter.id)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {filter.label}
+          </motion.button>
+        ))}
+      </motion.div>
+
+      {/* Projects Grid */}
+      {filteredProjects.length > 0 ? (
+        <div className="projects-grid">
+          {filteredProjects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              inView={true}
+              onClick={() => setSelectedProject(project)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state">
+          <h3>No completed projects found</h3>
+          <p>No projects match the current filter criteria.</p>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ProjectCompleted;

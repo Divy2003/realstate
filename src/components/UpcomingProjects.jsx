@@ -1,9 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
-import { projects } from '../data/projectsData';
+import { 
+  fetchProjects, 
+  selectProjectsLoading, 
+  selectProjectsByStatus 
+} from '../store/slices/projectsSlice';
 
-const UpcommingProjects = ({ inView, onProjectClick }) => {
-  const upcomingProjects = projects.filter(project => project.status === 'upcoming');
+const UpcomingProjects = ({ inView, onProjectClick }) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectProjectsLoading);
+  
+  // Get upcoming projects directly from the selector
+  const upcomingProjects = useSelector(selectProjectsByStatus('upcoming'));
+
+  useEffect(() => {
+    // Fetch upcoming projects
+    dispatch(fetchProjects({ 
+      status: 'upcoming', 
+      limit: 6,
+      page: 1
+    }));
+  }, [dispatch]);
+  if (isLoading) {
+    return (
+      <div className="loading-state">
+        <div className="loading-spinner"></div>
+        <p>Loading upcoming projects...</p>
+      </div>
+    );
+  }
+
+  if (upcomingProjects.length === 0) {
+    return (
+      <div className="empty-state">
+        <h3>No upcoming projects</h3>
+        <p>Check back soon for exciting new developments!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="projects-grid">
@@ -20,4 +55,4 @@ const UpcommingProjects = ({ inView, onProjectClick }) => {
   );
 };
 
-export default UpcommingProjects;
+export default UpcomingProjects;

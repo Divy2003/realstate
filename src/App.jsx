@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store/store';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
@@ -10,9 +13,18 @@ import LottiePreloader from './components/LottiePreloader';
 // Pages
 import Home from './pages/Home';
 import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 import CompletedProjects from './pages/CompletedProjects';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminProjectForm from './pages/AdminProjectForm';
+import AdminSettings from './pages/AdminSettings';
+import AdminRoute from './components/AdminRoute';
+import AdminRedirect from './components/AdminRedirect';
 
 import './styles/App.css';
 
@@ -45,11 +57,13 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="app">
-        <Header />
-        <AnimatePresence mode="wait">
-          <Routes>
+    <Provider store={store}>
+      <PersistGate loading={<LottiePreloader />} persistor={persistor}>
+        <Router>
+          <div className="app">
+            <Header />
+            <AnimatePresence mode="wait">
+              <Routes>
             <Route
               path="/"
               element={
@@ -77,6 +91,21 @@ function App() {
                   transition={pageTransition}
                 >
                   <Projects />
+                </motion.div>
+              }
+            />
+            <Route
+              path="/projects/:id"
+              element={
+                <motion.div
+                  key="project-detail"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
+                  <ProjectDetail />
                 </motion.div>
               }
             />
@@ -125,13 +154,134 @@ function App() {
                 </motion.div>
               }
             />
-          </Routes>
-        </AnimatePresence>
-        <Footer />
-        <ScrollToTop />
-        <CursorTrail />
-      </div>
-    </Router>
+            <Route
+              path="/admin/forgot-password"
+              element={
+                <motion.div
+                  key="admin-forgot-password"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
+                  <ForgotPassword />
+                </motion.div>
+              }
+            />
+            <Route
+              path="/admin/reset-password/:token"
+              element={
+                <motion.div
+                  key="admin-reset-password"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
+                  <ResetPassword />
+                </motion.div>
+              }
+            />
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={<AdminRedirect />}
+            />
+            <Route
+              path="/admin/login"
+              element={
+                <motion.div
+                  key="admin-login"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
+                  <AdminLogin />
+                </motion.div>
+              }
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminRoute>
+                  <motion.div
+                    key="admin-dashboard"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <AdminDashboard />
+                  </motion.div>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/projects/new"
+              element={
+                <AdminRoute>
+                  <motion.div
+                    key="admin-project-new"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <AdminProjectForm />
+                  </motion.div>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/projects/edit/:id"
+              element={
+                <AdminRoute>
+                  <motion.div
+                    key="admin-project-edit"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <AdminProjectForm />
+                  </motion.div>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminRoute>
+                  <motion.div
+                    key="admin-settings"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <AdminSettings />
+                  </motion.div>
+                </AdminRoute>
+              }
+            />
+              </Routes>
+            </AnimatePresence>
+            <Footer />
+            <ScrollToTop />
+            <CursorTrail />
+          </div>
+        </Router>
+      </PersistGate>
+    </Provider>
   );
 }
 

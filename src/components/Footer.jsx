@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useSelector } from 'react-redux';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
 import { FiPhone, FiMapPin } from 'react-icons/fi';
 import { BsArrowRight, BsSend } from 'react-icons/bs';
 import { IoMdCheckmarkCircle } from 'react-icons/io';
+import { selectCompanyInfo, selectContactInfo, selectSocialMedia } from '../store/slices/settingsSlice';
 import '../styles/Footer.css';
 
 const Footer = () => {
@@ -13,6 +15,9 @@ const Footer = () => {
     triggerOnce: true
   });
 
+  const companyInfo = useSelector(selectCompanyInfo);
+  const contactInfo = useSelector(selectContactInfo);
+  const socialMedia = useSelector(selectSocialMedia);
   const currentYear = new Date().getFullYear();
 
   const containerVariants = {
@@ -39,12 +44,12 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { name: 'Facebook', icon: <FaFacebook />, url: '#' },
-    { name: 'Twitter', icon: <FaTwitter />, url: '#' },
-    { name: 'Instagram', icon: <FaInstagram />, url: '#' },
-    { name: 'LinkedIn', icon: <FaLinkedin />, url: '#' },
-    { name: 'YouTube', icon: <FaYoutube />, url: '#' }
-  ];
+    { name: 'Facebook', icon: <FaFacebook />, url: socialMedia?.facebook || '#' },
+    { name: 'Twitter', icon: <FaTwitter />, url: socialMedia?.twitter || '#' },
+    { name: 'Instagram', icon: <FaInstagram />, url: socialMedia?.instagram || '#' },
+    { name: 'LinkedIn', icon: <FaLinkedin />, url: socialMedia?.linkedin || '#' },
+    { name: 'YouTube', icon: <FaYoutube />, url: socialMedia?.youtube || '#' }
+  ].filter(link => link.url !== '#'); // Only show links that have actual URLs
 
   const quickLinks = [
     { name: 'About Us', url: '#about' },
@@ -105,12 +110,21 @@ const Footer = () => {
           {/* Company Info */}
           <motion.div className="footer__section footer__company" variants={itemVariants}>
             <div className="company__logo">
-              <span className="logo__text"></span>
-              <span className="logo__accent">Anusthan</span>
+              {companyInfo?.logo?.url ? (
+                <img
+                  src={companyInfo.logo.url}
+                  alt={companyInfo.name || 'Company Logo'}
+                  className="logo__image"
+                />
+              ) : (
+                <>
+                  <span className="logo__text"></span>
+                  <span className="logo__accent">{companyInfo?.name || 'Anusthan'}</span>
+                </>
+              )}
             </div>
             <p className="company__description">
-              Creating exceptional real estate experiences with innovative design, 
-              sustainable practices, and unmatched quality. Your dream property awaits.
+              {companyInfo?.description || 'Creating exceptional real estate experiences with innovative design, sustainable practices, and unmatched quality. Your dream property awaits.'}
             </p>
             <div className="company__stats">
               <div className="stat">
@@ -175,8 +189,8 @@ const Footer = () => {
                 <div className="contact__details">
                   <span className="contact__label">Address</span>
                   <span className="contact__value">
-                    Anusthan, Near Rythm Heights<br />
-                    Zundal, Gujarat, 382421
+                    {contactInfo?.address?.street || 'Anusthan, Near Rythm Heights'}<br />
+                    {contactInfo?.address?.city || 'Zundal'}, {contactInfo?.address?.state || 'Gujarat'}, {contactInfo?.address?.zipCode || '382421'}
                   </span>
                 </div>
               </div>
@@ -184,14 +198,14 @@ const Footer = () => {
                 <span className="contact__icon"><FiPhone /></span>
                 <div className="contact__details">
                   <span className="contact__label">Phone</span>
-                  <span className="contact__value">+91 9376762299</span>
+                  <span className="contact__value">{contactInfo?.phone?.primary || '+91 9376762299'}</span>
                 </div>
               </div>
               <div className="contact__item">
                 <span className="contact__icon"><HiOutlineMail /></span>
                 <div className="contact__details">
                   <span className="contact__label">Email</span>
-                  <span className="contact__value">info@eliteestate.com</span>
+                  <span className="contact__value">{contactInfo?.email?.primary || 'info@eliteestate.com'}</span>
                 </div>
               </div>
             </div>
@@ -249,8 +263,8 @@ const Footer = () => {
 
             <div className="footer__copyright">
               <p>
-                © {currentYear} Elite Estate. All rights reserved. | 
-                <a href="#" className="footer__link"> Privacy Policy</a> | 
+                © {currentYear} {companyInfo?.name || 'Elite Estate'}. All rights reserved. |
+                <a href="#" className="footer__link"> Privacy Policy</a> |
                 <a href="#" className="footer__link"> Terms of Service</a>
               </p>
             </div>

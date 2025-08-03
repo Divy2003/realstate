@@ -64,8 +64,7 @@ const CompletedProjects = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <ProjectCompleted 
-            projects={sortedProjects}
+          <ProjectCompleted
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
             setSelectedProject={setSelectedProject}
