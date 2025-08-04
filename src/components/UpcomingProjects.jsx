@@ -1,29 +1,31 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
-import { 
-  fetchProjects, 
-  selectProjectsByStatus, 
-  selectProjectsLoadingByStatus 
+import {
+  fetchProjects,
+  selectProjectsByStatus,
+  selectProjectsLoadingByStatus,
+  selectFetchAttempted
 } from '../store/slices/projectsSlice';
 
 const UpcomingProjects = ({ inView, onProjectClick }) => {
   const dispatch = useDispatch();
-  
+
   // Use the updated selectors
   const upcomingProjects = useSelector(selectProjectsByStatus('upcoming'));
   const isLoading = useSelector(selectProjectsLoadingByStatus('upcoming'));
+  const fetchAttempted = useSelector(selectFetchAttempted('upcoming'));
 
   useEffect(() => {
-    // Only fetch if we don't have upcoming projects already
-    if (upcomingProjects.length === 0 && !isLoading) {
-      dispatch(fetchProjects({ 
-        status: 'upcoming', 
+    // Only fetch if we haven't attempted to fetch and we're not currently loading
+    if (!fetchAttempted && !isLoading) {
+      dispatch(fetchProjects({
+        status: 'upcoming',
         limit: 6,
         page: 1
       }));
     }
-  }, [dispatch, upcomingProjects.length, isLoading]);
+  }, [dispatch, fetchAttempted, isLoading]);
   
   if (isLoading) {
     return (

@@ -1,20 +1,67 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { projectsAPI, projectUtils, handleApiError } from '../../services/api';
+import { projects as mockProjects } from '../../data/projectsData';
+
+// Helper function to get mock projects by status
+const getMockProjectsByStatus = (status, limit = 12) => {
+  let filteredProjects = mockProjects;
+
+  if (status && status !== 'all') {
+    filteredProjects = mockProjects.filter(project => project.status === status);
+  }
+
+  // Apply limit
+  if (limit) {
+    filteredProjects = filteredProjects.slice(0, limit);
+  }
+
+  return {
+    projects: filteredProjects.map(projectUtils.transformProject),
+    pagination: {
+      page: 1,
+      limit: limit || 12,
+      total: filteredProjects.length,
+      pages: Math.ceil(filteredProjects.length / (limit || 12))
+    },
+    total: filteredProjects.length,
+    status: status || 'all',
+    isFromMockData: true
+  };
+};
 
 // Async thunks for project operations
 export const fetchProjects = createAsyncThunk(
   'projects/fetchProjects',
-  async (params = {}, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue, getState }) => {
     try {
+      // Check if we already have data for this status to prevent infinite calls
+      const state = getState();
+      const status = params.status || 'all';
+      const existingProjects = state.projects.projectsByStatus[status];
+
+      // If we already have projects for this status and it's not a forced refresh, return existing data
+      if (existingProjects && existingProjects.length > 0 && !params.forceRefresh) {
+        return {
+          projects: existingProjects,
+          pagination: state.projects.pagination,
+          total: existingProjects.length,
+          status: status,
+          isFromCache: true
+        };
+      }
+
       const response = await projectsAPI.getProjects(params);
       return {
         projects: response.data.projects.map(projectUtils.transformProject),
         pagination: response.data.pagination,
         total: response.data.total,
-        status: params.status || 'all', // Track which status was fetched
+        status: status,
+        isFromAPI: true
       };
     } catch (error) {
-      return rejectWithValue(handleApiError(error));
+      console.warn('API call failed, falling back to mock data:', error);
+      // Fallback to mock data when API fails
+      return getMockProjectsByStatus(params.status, params.limit);
     }
   }
 );
@@ -127,10 +174,19 @@ const initialState = {
     'under-construction': false,
     single: false
   },
+  // Track which statuses have been fetched to prevent infinite calls
+  fetchAttempted: {
+    all: false,
+    ongoing: false,
+    upcoming: false,
+    completed: false,
+    'under-construction': false
+  },
   isCreating: false,
   isUpdating: false,
   isDeleting: false,
   error: null,
+  usingMockData: false,
 };
 
 const projectsSlice = createSlice({
@@ -164,8 +220,15 @@ const projectsSlice = createSlice({
       .addCase(fetchProjects.fulfilled, (state, action) => {
         const status = action.payload.status || 'all';
         state.loading[status] = false;
+        state.fetchAttempted[status] = true;
+
+        // Don't update if this is from cache and we already have data
+        if (action.payload.isFromCache && state.projectsByStatus[status].length > 0) {
+          return;
+        }
+
         state.projectsByStatus[status] = action.payload.projects;
-        
+
         // If fetching all projects, also populate individual status arrays
         if (status === 'all' || !status) {
           const projects = action.payload.projects;
@@ -173,14 +236,20 @@ const projectsSlice = createSlice({
           state.projectsByStatus.ongoing = projects.filter(p => p.status === 'ongoing' || p.status === 'under-construction');
           state.projectsByStatus.upcoming = projects.filter(p => p.status === 'upcoming');
           state.projectsByStatus.completed = projects.filter(p => p.status === 'completed');
+          // Mark all as attempted
+          state.fetchAttempted.ongoing = true;
+          state.fetchAttempted.upcoming = true;
+          state.fetchAttempted.completed = true;
         }
-        
+
         state.pagination = action.payload.pagination;
+        state.usingMockData = action.payload.isFromMockData || false;
         state.error = null;
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         const status = action.meta.arg?.status || 'all';
         state.loading[status] = false;
+        state.fetchAttempted[status] = true;
         state.error = action.payload;
       })
       
@@ -352,5 +421,11 @@ export const selectProjectById = (id) => (state) => {
   const allProjects = Object.values(state.projects.projectsByStatus).flat();
   return allProjects.find(project => project.id === id);
 };
+
+export const selectFetchAttempted = (status) => (state) => {
+  return state.projects.fetchAttempted[status] || false;
+};
+
+export const selectUsingMockData = (state) => state.projects.usingMockData;
 
 export default projectsSlice.reducer;

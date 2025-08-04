@@ -2,29 +2,31 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import ProjectCard from './ProjectCard';
-import { 
-  fetchProjects, 
-  selectProjectsByStatus, 
-  selectProjectsLoadingByStatus 
+import {
+  fetchProjects,
+  selectProjectsByStatus,
+  selectProjectsLoadingByStatus,
+  selectFetchAttempted
 } from '../store/slices/projectsSlice';
 
 const ProjectCompleted = ({ activeFilter, onFilterChange, setSelectedProject }) => {
   const dispatch = useDispatch();
-  
+
   // Use the updated selectors
   const completedProjects = useSelector(selectProjectsByStatus('completed'));
   const isLoading = useSelector(selectProjectsLoadingByStatus('completed'));
+  const fetchAttempted = useSelector(selectFetchAttempted('completed'));
 
   useEffect(() => {
-    // Only fetch if we don't have completed projects already
-    if (completedProjects.length === 0 && !isLoading) {
-      dispatch(fetchProjects({ 
-        status: 'completed', 
+    // Only fetch if we haven't attempted to fetch and we're not currently loading
+    if (!fetchAttempted && !isLoading) {
+      dispatch(fetchProjects({
+        status: 'completed',
         limit: 12,
         page: 1
       }));
     }
-  }, [dispatch, completedProjects.length, isLoading]);
+  }, [dispatch, fetchAttempted, isLoading]);
 
   const containerVariants = {
     hidden: { opacity: 0 },

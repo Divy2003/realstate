@@ -9,7 +9,9 @@ import {
   selectProjectsLoadingByStatus,
   selectProjectsError,
   selectProjectsFilters,
-  selectProjectsPagination
+  selectProjectsPagination,
+  selectFetchAttempted,
+  selectUsingMockData
 } from '../store/slices/projectsSlice';
 import { selectIsAdmin } from '../store/slices/authSlice';
 import ProjectCard from '../components/ProjectCard';
@@ -34,10 +36,16 @@ const Projects = () => {
   const completedLoading = useSelector(selectProjectsLoadingByStatus('completed'));
   const allLoading = useSelector(selectProjectsLoadingByStatus('all'));
 
+  // Get fetch attempted states
+  const ongoingFetchAttempted = useSelector(selectFetchAttempted('ongoing'));
+  const upcomingFetchAttempted = useSelector(selectFetchAttempted('upcoming'));
+  const completedFetchAttempted = useSelector(selectFetchAttempted('completed'));
+
   const error = useSelector(selectProjectsError);
   const filters = useSelector(selectProjectsFilters);
   const pagination = useSelector(selectProjectsPagination);
   const isAdmin = useSelector(selectIsAdmin);
+  const usingMockData = useSelector(selectUsingMockData);
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
