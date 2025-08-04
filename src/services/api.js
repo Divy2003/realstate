@@ -422,6 +422,14 @@ export const projectUtils = {
   },
 };
 
+// Utility to get image URL from string or object
+export const getImageUrl = (image) => {
+  if (!image) return '';
+  if (typeof image === 'string') return image;
+  if (image.url) return image.url;
+  return '';
+};
+
 export default {
   authAPI,
   projectsAPI,
