@@ -160,10 +160,14 @@ const Home = () => {
                   ×
                 </button>
                 
-                {selectedProject.gallery && (
+                {(selectedProject.gallery || selectedProject.images) && (
                   <div className="modal-gallery">
-                    {selectedProject.gallery.map((image, idx) => (
-                      <img key={idx} src={image} alt={`${selectedProject.title} ${idx + 1}`} />
+                    {(selectedProject.gallery || selectedProject.images).map((image, idx) => (
+                      <img 
+                        key={idx} 
+                        src={typeof image === 'string' ? image : image.url} 
+                        alt={`${selectedProject.title} ${idx + 1}`} 
+                      />
                     ))}
                   </div>
                 )}
@@ -173,11 +177,11 @@ const Home = () => {
                   <p className="modal-location">{selectedProject.location}</p>
                   <p className="modal-description">{selectedProject.description}</p>
                   
-                  {selectedProject.features && (
+                  {(selectedProject.features || selectedProject.amenities) && (
                     <div className="modal-features">
-                      {selectedProject.features.map((feature, idx) => (
+                      {(selectedProject.features || selectedProject.amenities).map((feature, idx) => (
                         <span key={idx} className="modal-feature">
-                          {feature}
+                          {typeof feature === 'string' ? feature : feature.name}
                         </span>
                       ))}
                     </div>

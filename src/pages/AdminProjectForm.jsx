@@ -154,10 +154,13 @@ const AdminProjectForm = () => {
   const handleHeroImageUpload = async (formData) => {
     setIsUploadingHero(true);
     try {
-      const response = await uploadAPI.uploadSiteImage(formData);
+      // Use project images endpoint for hero image since it's part of a project
+      const response = await uploadAPI.uploadProjectImages(formData);
+      // For single hero image, take the first uploaded file from the data array
+      const heroImageUrl = response.data[0].url;
       setFormData(prev => ({
         ...prev,
-        heroImage: response.data.url
+        heroImage: heroImageUrl
       }));
     } catch (error) {
       console.error('Hero image upload error:', error);
@@ -171,7 +174,7 @@ const AdminProjectForm = () => {
     setIsUploadingImages(true);
     try {
       const response = await uploadAPI.uploadProjectImages(formData);
-      const newImageUrls = response.data.files.map(file => file.url);
+      const newImageUrls = response.data.map(file => file.url);
       setFormData(prev => ({
         ...prev,
         images: [...prev.images, ...newImageUrls]
@@ -403,6 +406,7 @@ const AdminProjectForm = () => {
                   existingImages={formData.heroImage ? [formData.heroImage] : []}
                   onRemove={() => setFormData(prev => ({ ...prev, heroImage: '' }))}
                   isLoading={isUploadingHero}
+                  fieldName="images"
                 />
               </div>
 

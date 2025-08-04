@@ -124,7 +124,7 @@ const ProjectCard = ({ project, index, inView, onClick, isAdmin = false }) => {
         <Link to={`/projects/${project.id}`} className="card-link">
           <div className="card-image">
             <img
-              src={project.images?.[0] || project.image || '/placeholder-project.jpg'}
+              src={project.images?.[0]?.url || project.image || '/placeholder-project.jpg'}
               alt={project.title}
             />
             {isOngoing && project.progress !== undefined && (

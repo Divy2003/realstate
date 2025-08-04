@@ -294,8 +294,12 @@ const Projects = () => {
                 ×
               </button>
               <div className="modal-gallery">
-                {selectedProject.gallery && selectedProject.gallery.map((image, idx) => (
-                  <img key={idx} src={image} alt={`${selectedProject.title} ${idx + 1}`} />
+                {(selectedProject.gallery || selectedProject.images) && (selectedProject.gallery || selectedProject.images).map((image, idx) => (
+                  <img 
+                    key={idx} 
+                    src={typeof image === 'string' ? image : image.url} 
+                    alt={`${selectedProject.title} ${idx + 1}`} 
+                  />
                 ))}
               </div>
               <div className="modal-info">
@@ -303,9 +307,9 @@ const Projects = () => {
                 <p className="modal-location">{selectedProject.location}</p>
                 <p className="modal-description">{selectedProject.description}</p>
                 <div className="modal-features">
-                  {selectedProject.features && selectedProject.features.map((feature, idx) => (
+                  {(selectedProject.features || selectedProject.amenities) && (selectedProject.features || selectedProject.amenities).map((feature, idx) => (
                     <span key={idx} className="modal-feature">
-                      {feature}
+                      {typeof feature === 'string' ? feature : feature.name}
                     </span>
                   ))}
                 </div>

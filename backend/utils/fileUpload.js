@@ -91,15 +91,28 @@ const deleteFile = (filePath) => {
 // Helper function to get file URL
 const getFileUrl = (req, filePath) => {
   if (!filePath) return null;
-  
+
   // If it's already a full URL (Cloudinary), return as is
   if (filePath.startsWith('http')) {
     return filePath;
   }
-  
+
   // For local files, construct the URL
   const baseUrl = `${req.protocol}://${req.get('host')}`;
-  return `${baseUrl}/${filePath.replace(/\\/g, '/')}`;
+
+  // Extract relative path from uploads directory
+  // Handle both forward and backward slashes
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  const uploadsIndex = normalizedPath.indexOf('uploads/');
+
+  if (uploadsIndex !== -1) {
+    // Extract path starting from 'uploads/'
+    const relativePath = normalizedPath.substring(uploadsIndex);
+    return `${baseUrl}/${relativePath}`;
+  } else {
+    // Fallback: assume the path is already relative
+    return `${baseUrl}/${normalizedPath}`;
+  }
 };
 
 module.exports = {

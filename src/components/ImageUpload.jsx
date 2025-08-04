@@ -2,15 +2,16 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/ImageUpload.css';
 
-const ImageUpload = ({ 
-  onUpload, 
-  multiple = false, 
-  maxFiles = 10, 
+const ImageUpload = ({
+  onUpload,
+  multiple = false,
+  maxFiles = 10,
   accept = "image/*",
   label = "Upload Images",
   existingImages = [],
   onRemove = null,
-  isLoading = false
+  isLoading = false,
+  fieldName = null // Custom field name for FormData
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
@@ -74,13 +75,16 @@ const ImageUpload = ({
     // Upload files
     try {
       const formData = new FormData();
-      
+
+      // Use custom field name if provided, otherwise use default logic
+      const uploadFieldName = fieldName || (multiple ? 'images' : 'image');
+
       if (multiple) {
         validFiles.forEach(file => {
-          formData.append('images', file);
+          formData.append(uploadFieldName, file);
         });
       } else {
-        formData.append('image', validFiles[0]);
+        formData.append(uploadFieldName, validFiles[0]);
       }
 
       // Call the upload handler

@@ -28,9 +28,9 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : ['http://localhost:3000', 'http://localhost:5173'],
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL
+    : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://127.0.0.1:3000'],
   credentials: true,
   optionsSuccessStatus: 200
 };
@@ -45,8 +45,41 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Static files for uploads
-app.use('/uploads', express.static('uploads'));
+// Static files for uploads with CORS headers
+app.use('/uploads', (req, res, next) => {
+  // Set CORS headers explicitly for static files
+  if (process.env.NODE_ENV === 'development') {
+    // In development, allow all origins for static files
+    res.header('Access-Control-Allow-Origin', '*');
+  } else {
+    // In production, use specific origin
+    const allowedOrigins = [process.env.FRONTEND_URL];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+    }
+  }
+  
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+}, express.static('uploads', {
+  setHeaders: (res, path) => {
+    // Set additional headers for image files
+    if (path.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+      if (process.env.NODE_ENV === 'development') {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+      }
+    }
+  }
+}));
 
 // Database connection
 const connectDB = async () => {
