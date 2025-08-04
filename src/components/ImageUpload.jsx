@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getImageUrl } from '../services/api';
 import '../styles/ImageUpload.css';
 
 const ImageUpload = ({
@@ -15,6 +16,7 @@ const ImageUpload = ({
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({});
+  const [imageErrors, setImageErrors] = useState(new Set());
   const fileInputRef = useRef(null);
 
   const handleDrag = (e) => {
@@ -57,7 +59,7 @@ const ImageUpload = ({
       return;
     }
 
-    // Validate file types
+    // 🔍 Validate file types
     const validFiles = fileArray.filter(file => {
       if (!file.type.startsWith('image/')) {
         alert(`${file.name} is not a valid image file`);
@@ -72,7 +74,7 @@ const ImageUpload = ({
 
     if (validFiles.length === 0) return;
 
-    // Upload files
+    // 📤 Upload files
     try {
       const formData = new FormData();
 
@@ -104,6 +106,23 @@ const ImageUpload = ({
     fileInputRef.current?.click();
   };
 
+  // 🖼️ Handle image error
+  const handleImageError = (index, imageUrl) => {
+    console.warn('Image failed to load:', imageUrl);
+    setImageErrors(prev => new Set([...prev, index]));
+  };
+
+  // 🔧 Get display URL for existing images
+  const getDisplayUrl = (image) => {
+    if (typeof image === 'string') {
+      return getImageUrl(image);
+    }
+    if (image && image.url) {
+      return getImageUrl(image.url);
+    }
+    return '/placeholder-image.jpg';
+  };
+
   return (
     <div className="image-upload-container">
       <div className="upload-section">
@@ -128,7 +147,7 @@ const ImageUpload = ({
             {isLoading ? (
               <div className="upload-loading">
                 <div className="loading-spinner"></div>
-                <p>Uploading...</p>
+                <p>📤 Uploading...</p>
               </div>
             ) : (
               <>
@@ -138,7 +157,7 @@ const ImageUpload = ({
                   Drag and drop {multiple ? 'images' : 'an image'} here, or click to select
                 </p>
                 <p className="upload-info">
-                  Supports: JPG, PNG, GIF, WebP (Max: 10MB {multiple ? `per file, ${maxFiles} files total` : ''})
+                  📷 Supports: JPG, PNG, GIF, WebP (Max: 10MB {multiple ? `per file, ${maxFiles} files total` : ''})
                 </p>
               </>
             )}
@@ -146,45 +165,96 @@ const ImageUpload = ({
         </div>
       </div>
 
-      {/* Existing Images Preview */}
+      {/* 🖼️ Existing Images Preview */}
       {existingImages.length > 0 && (
         <div className="existing-images">
-          <h4>Current Images</h4>
+          <h4>🖼️ Current Images</h4>
           <div className="images-grid">
             <AnimatePresence>
-              {existingImages.map((image, index) => (
-                <motion.div
-                  key={image.url || image}
-                  className="image-preview"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <img
-                    src={typeof image === 'string' ? image : image.url}
-                    alt={`Preview ${index + 1}`}
-                    onError={(e) => {
-                      e.target.src = '/placeholder-image.jpg';
-                    }}
-                  />
-                  {onRemove && (
-                    <button
-                      type="button"
-                      className="remove-image-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onRemove(index);
-                      }}
-                      title="Remove image"
-                    >
-                      ×
-                    </button>
-                  )}
-                </motion.div>
-              ))}
+              {existingImages.map((image, index) => {
+                const displayUrl = getDisplayUrl(image);
+                const hasError = imageErrors.has(index);
+                
+                return (
+                  <motion.div
+                    key={image.url || image || index}
+                    className="image-preview"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="image-container">
+                      {!hasError ? (
+                        <img
+                          src={displayUrl}
+                          alt={`Preview ${index + 1}`}
+                          loading="lazy"
+                          onError={() => handleImageError(index, displayUrl)}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            borderRadius: '8px'
+                          }}
+                        />
+                      ) : (
+                        <div className="image-error">
+                          <span>❌</span>
+                          <p>Failed to load</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {onRemove && (
+                      <button
+                        type="button"
+                        className="remove-image-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRemove(index);
+                        }}
+                        title="Remove image"
+                      >
+                        ❌
+                      </button>
+                    )}
+                    
+                    {/* 🔗 Show URL for debugging in development */}
+                    {process.env.NODE_ENV === 'development' && (
+                      <div className="image-debug-info" style={{ 
+                        fontSize: '10px', 
+                        color: '#666', 
+                        marginTop: '4px',
+                        wordBreak: 'break-all' 
+                      }}>
+                        {displayUrl}
+                      </div>
+                    )}
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
+          
+          {/* 📊 Upload Progress */}
+          {Object.keys(uploadProgress).length > 0 && (
+            <div className="upload-progress-section">
+              <h5>📊 Upload Progress</h5>
+              {Object.entries(uploadProgress).map(([fileName, progress]) => (
+                <div key={fileName} className="progress-item">
+                  <span>{fileName}</span>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
+                  <span>{progress}%</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

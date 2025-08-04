@@ -5,14 +5,27 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 const { initializeDirectories } = require('./utils/initializeDirectories');
 const { initializeAdmin } = require('./utils/initializeAdmin');
 require('dotenv').config();
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware - Configure helmet to allow images
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'"]
+    }
+  }
+}));
+
 app.use(compression());
 
 // Rate limiting
@@ -26,14 +39,36 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// CORS configuration - More permissive for development
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL
-    : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://127.0.0.1:3000'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:3000',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
 };
+
 app.use(cors(corsOptions));
 
 // Body parsing middleware
@@ -45,41 +80,25 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Static files for uploads with CORS headers
-app.use('/uploads', (req, res, next) => {
-  // Set CORS headers explicitly for static files
-  if (process.env.NODE_ENV === 'development') {
-    // In development, allow all origins for static files
-    res.header('Access-Control-Allow-Origin', '*');
-  } else {
-    // In production, use specific origin
-    const allowedOrigins = [process.env.FRONTEND_URL];
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-      res.header('Access-Control-Allow-Origin', origin);
-    }
-  }
-  
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-}, express.static('uploads', {
-  setHeaders: (res, path) => {
-    // Set additional headers for image files
-    if (path.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
-      if (process.env.NODE_ENV === 'development') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-      }
+// 🖼️ Static files middleware - Simplified and more reliable
+app.use('/uploads', cors(corsOptions), express.static(path.join(__dirname, 'uploads'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
+  setHeaders: (res, filePath) => {
+    // Set CORS headers for all static files
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    
+    // Set cache headers for images
+    if (filePath.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+      res.setHeader('Cache-Control', process.env.NODE_ENV === 'production' ? 'public, max-age=86400' : 'no-cache');
     }
   }
 }));
+
+// Handle preflight requests for uploads
+app.options('/uploads/*', cors(corsOptions));
 
 // Database connection
 const connectDB = async () => {
@@ -88,12 +107,12 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
 
     // Initialize admin user after database connection
     await initializeAdmin();
   } catch (error) {
-    console.error('Database connection error:', error);
+    console.error('❌ Database connection error:', error);
     process.exit(1);
   }
 };
@@ -104,7 +123,7 @@ initializeDirectories();
 // Connect to database
 connectDB();
 
-// Routes
+// 🔗 API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/projects', require('./routes/projects'));
 app.use('/api/apartments', require('./routes/apartments'));
@@ -112,18 +131,43 @@ app.use('/api/leads', require('./routes/leads'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/upload', require('./routes/upload'));
 
-// Health check endpoint
+// ❤️ Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    uploads: '/uploads endpoint available'
   });
 });
 
-// Global error handler
+// 🗂️ Test endpoint for uploads directory
+app.get('/api/test-uploads', (req, res) => {
+  const fs = require('fs');
+  const uploadsPath = path.join(__dirname, 'uploads');
+  
+  try {
+    const exists = fs.existsSync(uploadsPath);
+    const stats = exists ? fs.statSync(uploadsPath) : null;
+    
+    res.json({
+      success: true,
+      uploadsPath,
+      exists,
+      isDirectory: stats ? stats.isDirectory() : false,
+      permissions: stats ? stats.mode.toString(8) : null
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// 🚨 Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('🚨 Error:', err.stack);
   
   // Mongoose validation error
   if (err.name === 'ValidationError') {
@@ -159,6 +203,14 @@ app.use((err, req, res, next) => {
     });
   }
   
+  // CORS error
+  if (err.message && err.message.includes('CORS')) {
+    return res.status(403).json({
+      success: false,
+      message: 'CORS policy violation'
+    });
+  }
+  
   // Default error
   res.status(err.status || 500).json({
     success: false,
@@ -166,19 +218,21 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// 🔍 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: `Route ${req.originalUrl} not found`
   });
 });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📁 Static files served from: /uploads`);
+  console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
 });
 
 module.exports = app;
